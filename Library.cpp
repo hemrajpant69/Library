@@ -1,5 +1,6 @@
 // Library Management System NCIT
 #include<iostream>
+#include<fstream>
 #include<conio.h>
 using namespace std;
 class library
@@ -20,8 +21,67 @@ class library
 		void del();
 		void sort();
 		void show();
+		void saveToFile();
+        void loadFromFile();
 		
 };
+
+
+void library::saveToFile() {
+    ofstream file("library.txt");
+    Node* temp = head;
+    while (temp) {
+        file <<"\t ========= || Book Id || ========= : "<< temp->id << "\n" <<"\t ========= || Book Name || ========= :"<<temp->name << "\n" <<"\t ========= || Author Name || ========= : "<<temp->author << "\n" <<"\t ========= || Publisher || ========= : "<<temp->publisher << "\n"<<endl;
+        temp = temp->next_add;
+    }
+    file.close();
+}
+
+void library::loadFromFile() {
+    ifstream file("library.txt");
+    string tempStr; // Temp variable to hold the input from the file
+    int id;
+    string name, author, publisher;
+
+    while (file) {
+        // Read Book ID
+        getline(file, tempStr, ':');
+        file >> id;
+
+        // Read Book Name
+        file.ignore();
+        getline(file, tempStr, ':');
+        getline(file, name);
+
+        // Read Author Name
+        getline(file, tempStr, ':');
+        getline(file, author);
+
+        // Read Publisher
+        getline(file, tempStr, ':');
+        getline(file, publisher);
+
+        // Create a new node and append to the list
+        Node* new_node = new Node;
+        new_node->id = id;
+        new_node->name = name;
+        new_node->author = author;
+        new_node->publisher = publisher;
+        new_node->next_add = NULL;
+
+        if (!head) {
+            head = new_node;
+        } else {
+            Node* temp = head;
+            while (temp->next_add) {
+                temp = temp->next_add;
+            }
+            temp->next_add = new_node;
+        }
+    }
+    file.close();
+}
+
 void library::menu()
 {
 p:
@@ -33,7 +93,7 @@ cout<<"\n\n\t\t\t========================================";
 cout<<"\n\n 1. Insert New Record";
 cout<<"\n\n 2.Search Record";
 cout<<"\n\n 3.Update Record";
-cout<<"\n\n 4.Delte Record";
+cout<<"\n\n 4.Delete Record";
 cout<<"\n\n 5.Show ALl Record";
 cout<<"\n\n 6.Exit";
 cout<<"\n\n Enter Your choice : ";
@@ -94,6 +154,8 @@ else{
 
 }
 cout<<"\n\n\t\t\t New Book Inserted Successfully....";
+ 
+    saveToFile();
 }
 void library::search()
 {
@@ -167,7 +229,9 @@ else{
 		found++;
 		cout<<"\n\n\t\t\t BOOK UPDATED SUCCESSFULLY...";
 		 }
+	
 		 ptr=ptr -> next_add;
+		 	 saveToFile(); 
 	 }
 	 if(found==0)
 	 {
@@ -220,6 +284,7 @@ else{
 	 	cout<<"\n\n BOOK ID IS INVALID......";
 	 }
 }
+	 saveToFile(); 
 }
  void library::sort()
 {
@@ -292,6 +357,7 @@ cout<<"\n\n\t\t\t========================================";
 int main()
 {
 	library obj;
+	obj.loadFromFile();
 	obj.menu();
 	return 0;
 }
