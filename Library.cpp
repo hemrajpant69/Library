@@ -2,6 +2,7 @@
 #include<iostream>
 #include<fstream>
 #include<conio.h>
+#include<string.h>
 using namespace std;
 class library
 { 
@@ -21,6 +22,7 @@ class library
 		void del();
 		void sort();
 		void show();
+		void clear();
 		void saveToFile();
         void loadFromFile();
 		
@@ -95,7 +97,8 @@ cout<<"\n\n 2.Search Record";
 cout<<"\n\n 3.Update Record";
 cout<<"\n\n 4.Delete Record";
 cout<<"\n\n 5.Show ALl Record";
-cout<<"\n\n 6.Exit";
+cout<<"\n\n 6.Clear All Data ";
+cout<<"\n\n 7.Exit";
 cout<<"\n\n Enter Your choice : ";
 cin>>choice;
 switch(choice)
@@ -117,6 +120,9 @@ switch(choice)
 	     show();
 		break;
 	case 6:
+		clear();
+		break;
+	case 7:
 	    exit(0);
 	default:
 	    cout<<"\n\n Invalid Choice..Please Try Again.....";
@@ -353,7 +359,41 @@ cout<<"\n\n\t\t\t========================================";
 		ptr=ptr -> next_add;
 	 }
 	
-}		
+}
+void library::clear() {
+    system("cls");  // Clearing the screen for better UI
+    cout << "\n\n\t\t\t========================================";
+    cout << "\n\n\t\t\t====LIBRARY MANAGEMENT SYSTEM NCIT=======";
+    cout << "\n\n\t\t\t========================================";
+    cout << "\n\n\t\t\tClear All Records";
+    
+    if(head == NULL) {
+        cout << "\n\n\t\t\tLinked List is Empty....";
+    } else {
+        char pass[30];
+        const char password[30] = "q4r791stnx";
+        cout << "\n\n\t\t\tEnter Password to Clear Records: ";
+        cin >> pass;
+
+        if(strcmp(pass, password) == 0) {
+            Node* current = head;
+            Node* next;
+
+            while (current != NULL) {
+                next = current->next_add;
+                delete current;
+                current = next;
+            }
+
+            head = NULL; // Resetting head pointer
+            cout << "\n\n\t\t\tAll records have been cleared!";
+        } else {
+            cout << "\n\n\t\t\tPassword Incorrect!";
+        }
+    }
+    saveToFile();
+}
+	
 int main()
 {
 	library obj;
