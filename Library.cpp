@@ -13,6 +13,9 @@ class library
 		string name,author,publisher;
 		Node *next_add;
 	};
+	char newPassword[30];
+    char updatedPassword[30];
+	char storedPassword[30];
 	public:
 		Node *head=NULL;
 		void menu();
@@ -23,6 +26,7 @@ class library
 		void sort();
 		void show();
 		void clear();
+		void changePassword();
 		void saveToFile();
         void loadFromFile();
 		
@@ -98,7 +102,8 @@ cout<<"\n\n 3.Update Record";
 cout<<"\n\n 4.Delete Record";
 cout<<"\n\n 5.Show ALl Record";
 cout<<"\n\n 6.Clear All Data ";
-cout<<"\n\n 7.Exit";
+cout << "\n\n 7. Change Password";
+cout << "\n\n 8. Exit";
 cout<<"\n\n Enter Your choice : ";
 cin>>choice;
 switch(choice)
@@ -123,7 +128,11 @@ switch(choice)
 		clear();
 		break;
 	case 7:
-	    exit(0);
+        changePassword();
+        break;
+    case 8:
+        exit(0);
+
 	default:
 	    cout<<"\n\n Invalid Choice..Please Try Again.....";
 	}
@@ -252,11 +261,12 @@ int t_id,found=0;
 cout<<"\n\n\t\t\t========================================";
 cout<<"\n\n\t\t\t====LIBRARY MANAGEMENT SYSTEM NCIT=======";
 cout<<"\n\n\t\t\t========================================";
+	
 if(head==NULL)
 {
 cout<<"\n\n Linked List is Empty....";
 }
-else{
+   else{
 	cout<<"\n\n BOOK ID:";
 	cin>>t_id;	
 	if(t_id==head -> id)
@@ -290,6 +300,7 @@ else{
 	 	cout<<"\n\n BOOK ID IS INVALID......";
 	 }
 }
+
 	 saveToFile(); 
 }
  void library::sort()
@@ -365,17 +376,15 @@ void library::clear() {
     cout << "\n\n\t\t\t========================================";
     cout << "\n\n\t\t\t====LIBRARY MANAGEMENT SYSTEM NCIT=======";
     cout << "\n\n\t\t\t========================================";
-    cout << "\n\n\t\t\tClear All Records";
-    
+    cout << "\n\n\t\t\tClear All Records"<<endl;
+    cout<<storedPassword;
     if(head == NULL) {
         cout << "\n\n\t\t\tLinked List is Empty....";
     } else {
         char pass[30];
-        const char password[30] = "q4r791stnx";
         cout << "\n\n\t\t\tEnter Password to Clear Records: ";
         cin >> pass;
-
-        if(strcmp(pass, password) == 0) {
+        if(strcmp(pass,updatedPassword) == 0) {
             Node* current = head;
             Node* next;
 
@@ -393,6 +402,55 @@ void library::clear() {
     }
     saveToFile();
 }
+
+void library::changePassword() {
+    system("cls");
+    cout << "\n\n\t\t\t========================================";
+    cout << "\n\n\t\t\t====LIBRARY MANAGEMENT SYSTEM NCIT=======";
+    cout << "\n\n\t\t\t========================================";
+    cout << "\n\n\t\t\tChange Password";
+
+    char currentPassword[30];
+    char confirmPassword[30];
+
+    ifstream passFile("password.txt");
+    if(passFile.is_open()) {
+        passFile>>storedPassword;
+        passFile.close();
+    } else {
+        cout << "\n\n\t\t\tError accessing password file!";
+        return;
+    }
+
+    cout <<"\n\n\t\t\tEnter Current Password: ";
+    cin >>currentPassword;
+
+    if(strcmp(currentPassword, storedPassword) != 0) {
+        cout << "\n\n\t\t\tIncorrect Password!";
+        return;
+    }
+
+    cout<<"\n\n\t\t\tEnter New Password: ";
+    cin>>newPassword;
+    cout<<"\n\n\t\t\tConfirm New Password: ";
+    cin>>confirmPassword;
+
+    if(strcmp(newPassword, confirmPassword) == 0) {
+        ofstream passFileOut("password.txt");
+        if(passFileOut.is_open()) {
+            passFileOut<<newPassword;
+            passFileOut.close();
+            cout<<"\n\n\t\t\tPassword changed successfully!";
+            strcpy(updatedPassword,newPassword);
+            
+        } else {
+            cout<<"\n\n\t\t\tError accessing password file!";
+        }
+    } else {
+        cout<<"\n\n\t\t\tPasswords do not match!";
+    }
+}
+
 	
 int main()
 {
